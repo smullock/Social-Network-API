@@ -1,9 +1,11 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model, Types } = require('mongoose');
 
-const reactionSchema = new mongoose.Schema({
+const moment = require('moment')
+
+const reactionSchema = new Schema({
     reactionId: {
-        type: mongoose.Schema.Types.ObjectId,
-        default: mongoose.Types.ObjectId
+        type: Schema.Types.ObjectId,
+        default: new Types.ObjectId
     },
     reactionBody: {
         type: String,
@@ -15,14 +17,14 @@ const reactionSchema = new mongoose.Schema({
         required: true,
     },
     createdAt: {
-        Type: Date,
+        type: Date,
         default: Date.now,
-
-    }
+        get: createdAtVal => moment(createdAtVal).format("MMM DD, YYYY [at] hh:mm a"),
+       },node 
 })
 
 // Schema to create Thought model
-const thoughtSchema = new mongoose.Schema(
+const thoughtSchema = new Schema(
     {
       thoughtText:{
         type: String,
@@ -33,25 +35,19 @@ const thoughtSchema = new mongoose.Schema(
       createdAt: {
         type: Date,
         default: Date.now,
-        // add Use a getter method to format the timestamp on query 
-      },
+        get: createdAtVal => moment(createdAtVal).format("MMM DD, YYYY [at] hh:mm a"),
+       },
         userName: {
             type: String,
             required: true,
         },
-        reactions: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'Reaction',
-        },
-      ],
+        reactions: [reactionSchema],
 
     },
     {
-      // Mongoose supports two Schema options to transform Objects after querying MongoDb: toJSON and toObject.
-      // Here we are indicating that we want virtuals to be included with our response, overriding the default behavior
       toJSON: {
         virtuals: true,
+        getters: true,
       },
       id: false,
     }

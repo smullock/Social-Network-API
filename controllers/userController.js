@@ -1,28 +1,13 @@
-const { ObjectId } = require('mongoose').Types;
 const { User, Thought } = require('../models');
-
-
-
-
-
 
 
 module.exports = {
     // Get all users
-    getUsers(req, res) {
-      User.find()
-        .then(async (users) => {
-          const userObj = {
-            username,
-            email
-          };
-          return res.json(userObj);
-        })
-        .catch((err) => {
-          console.log(err);
-          return res.status(500).json(err);
-        });
-    },
+    getUser(req, res) {
+            User.find({})
+              .then((user) => res.json(user))
+              .catch((err) => res.status(500).json(err));
+          },
     ///GET a single user by its _id and populated thought and friend data
     getSingleUser(req, res) {
       User.findOne({ _id: req.params.userId })
@@ -86,7 +71,7 @@ module.exports = {
     )
       .then((user) =>
         !user
-          ? res.status(404).json({ message: "No User find with this ID!" })
+          ? res.status(404).json({ message: "No User found with this ID!" })
           : res.json(user)
       )
       .catch((err) => res.status(500).json(err));
